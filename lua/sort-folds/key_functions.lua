@@ -22,13 +22,10 @@ end
 -- Built-in: Extract BibTeX citation key
 local function get_citekey(fold)
   local first_line = fold:get_line(0) or ""
-  -- Very crude extraction without regexes
-  local after_brace = first_line:match("{([^}]*)")
-  if after_brace then
-    local key = after_brace:match("([^,]*)")
-    return key or ""
-  end
-  return ""
+  -- Skip fold markers and extract the citekey after the entry type
+  -- Pattern matches: {{{ @type{citekey, or just @type{citekey,
+  local citekey = first_line:match("@%w+{([^,}]+)")
+  return citekey or ""
 end
 
 -- Register built-in functions
