@@ -23,7 +23,8 @@ end
 local function get_citekey(fold)
   local first_line = fold:get_line(0) or ""
   -- Skip fold markers and extract the citekey after the entry type
-  -- Pattern matches: {{{ @type{citekey, or just @type{citekey,
+  -- Pattern matches: @type{citekey, or @type{citekey}
+  -- [^,}]+ matches characters until comma or closing brace
   local citekey = first_line:match("@%w+{([^,}]+)")
   return citekey or ""
 end

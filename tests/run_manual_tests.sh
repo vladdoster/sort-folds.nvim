@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Simple manual test runner that doesn't require external dependencies
 # This creates temporary test files and runs them with nvim in headless mode
+#
+# NOTE: For better formatted tests, use: nvim --headless -l tests/manual_test.lua
 
 set -e
 
