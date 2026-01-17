@@ -48,9 +48,9 @@ jobs:
           echo "EDITOR=${{ steps.vim.outputs.executable }}" >> $GITHUB_ENV
 
       - name: Setup tests
-        run: ./test/setup.sh
+        run: ./tests/setup.sh
 
       - name: Run tests
         run: |
           set -euo pipefail
-          find test -mindepth 1 -maxdepth 1 -type d -print0 | xargs -0 bash ./test/run.sh
+          find tests -mindepth 1 -maxdepth 1 -type d -print0 | xargs -0 bash ./tests/run.sh
