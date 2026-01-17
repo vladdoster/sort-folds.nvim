@@ -25,10 +25,10 @@ jobs:
           version: ${{ matrix.neovim_version }}
 
       - name: Install LuaRocks
-        run: sudo apt-get install -y luarocks
+        run: sudo apt-get install -y luarocks lua
 
       - name: Install test dependencies
-        run: sudo luarocks install busted vusted
+        run: make install
 
       - name: Run tests
-        run: make test
+        run: make test-coverage

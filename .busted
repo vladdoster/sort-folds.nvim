@@ -1,5 +1,6 @@
 return {
   _all = {
+    converage = true,
     lpath = "lua/?.lua;lua/?/init.lua",
     ROOT = {"."},
   },
