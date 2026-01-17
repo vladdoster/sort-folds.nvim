@@ -1,13 +1,13 @@
 # Testing
 
-This repository uses the [Busted](https://olivinelabs.com/busted/) Lua test framework for unit testing.
+This repository uses the [Busted](https://olivinelabs.com/busted/) Lua test framework with [vusted](https://github.com/notomo/vusted) for unit testing.
 
 ## Prerequisites
 
 - Neovim 0.5.0+ or Vim 8.2+ with Lua support
 - LuaRocks (Lua package manager)
 - Busted test framework
-- nlua (Neovim Lua interpreter)
+- vusted (Neovim test runner for Busted)
 
 ## Quick Start
 
@@ -17,7 +17,7 @@ This repository uses the [Busted](https://olivinelabs.com/busted/) Lua test fram
 make install
 ```
 
-This will install `busted` and `nlua` using LuaRocks.
+This will install `busted` and `vusted` using LuaRocks.
 
 ### Run Tests
 
@@ -25,7 +25,7 @@ This will install `busted` and `nlua` using LuaRocks.
 make test
 ```
 
-This runs all tests in the `spec/` directory using Busted.
+This runs all tests in the `spec/` directory using vusted.
 
 ### Other Makefile Targets
 
@@ -104,22 +104,3 @@ Busted provides many assertion functions:
 - `assert.has_error(function)`
 
 See [Busted documentation](https://olivinelabs.com/busted/) for more details.
-
-## Manual Testing
-
-For quick manual testing without the full framework:
-
-```bash
-nvim --headless -l tests/manual_test.lua
-```
-
-## Legacy Tests
-
-The `tests/` directory contains legacy tests using Plenary.nvim. These are maintained for compatibility but new tests should be added to the `spec/` directory using Busted.
-
-### Running Plenary Tests
-
-```bash
-cd tests
-./run_unit_tests.sh
-```

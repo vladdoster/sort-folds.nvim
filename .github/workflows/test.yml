@@ -1,4 +1,4 @@
-name: Run tests in vim
+name: Run tests
 
 on:
   push:
@@ -13,44 +13,22 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        vim_type: ['neovim']
-        vim_version: ['head', 'stable']
-        python_version: [ "3.5.x", "3.6.x", "3.7.x", "3.8.x", "3.9.x" ]
-        include:
-          # vim is built against 3.6.x at the moment
-          - vim_type: 'vim'
-            vim_version: 'head'
-            python_version: "3.6.x"
+        neovim_version: ['stable', 'nightly']
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        id: python
+      - uses: actions/checkout@v4
+
+      - name: Setup Neovim
+        uses: rhysd/action-setup-vim@v1
         with:
-          python-version: ${{ matrix.python_version }}
+          neovim: true
+          version: ${{ matrix.neovim_version }}
 
-      - name: Setup Vim
-        id: vim
-        uses: thinca/action-setup-vim@v1
-        with:
-          cache: true
-          download: always
-          gui: false
-          vim_type: ${{ matrix.vim_type }}
-          vim_version: ${{ matrix.vim_version }}
+      - name: Install LuaRocks
+        run: sudo apt-get install -y luarocks
 
-      - name: Ensure pynvim
-        if: ${{ matrix.vim_type == 'neovim' }}
-        run: python3 -m pip install --user --upgrade pynvim
-
-      - name: Setup environment
-        run: |
-          echo "EDITOR=${{ steps.vim.outputs.executable }}" >> $GITHUB_ENV
-
-      - name: Setup tests
-        run: ./tests/setup.sh
+      - name: Install test dependencies
+        run: sudo luarocks install busted vusted
 
       - name: Run tests
-        run: |
-          set -euo pipefail
-          find tests -mindepth 1 -maxdepth 1 -type d -print0 | xargs -0 bash ./tests/run.sh
+        run: make test
