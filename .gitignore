@@ -96,3 +96,4 @@ doc/tags
 luarocks/
 .luacov
 *.rock
+luacov.*.*
