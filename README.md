@@ -24,13 +24,9 @@ Furthermore, it is possible to sort based on other lines than then first.
 
 ## Requirements
 
-* Python 3.5+ (3.4+ should be fine, but tests only cover Python 3.5+)
-* Relatively recent version of `vim` (8.0.0+, no guarantees about 7.x.x)/`neovim` with support for Python 3.
-  * `vim`: 8.0.0+, 7.x.x are untested but might still work… tested again `HEAD`
-  * `neovim`: all versions supported, currently testing against the latest stable (`v0.4.4`) and `HEAD`.
+* Neovim 0.5.0+ or Vim 8.2+ with Lua support
 
-### Python 2
-The last Python 2 compatible commit is still available as tag [`last-py2`](https://github.com/obreitwi/vim-sort-folds/releases/tag/last-py2).
+Note: This plugin now uses Lua instead of Python. For the old Python-based version, see the `last-py3` tag.
 
 ## Installation
 
@@ -62,9 +58,8 @@ Default is `0`
 ## Custom key-function
 
 Sometimes you need to sort folds by some custom key.
-For this reason, you can define a custom sort function in Python that maps fold
-contents (essentially a list of lines) to a a key (a string) by which the fold
-will be sorted.
+For this reason, you can define a custom sort function in Lua that maps fold
+contents to a key (a string or number) by which the fold will be sorted.
 
 Afterwards, you need to set `g:sort_folds_key_function` to the name of the
 function.
@@ -77,17 +72,21 @@ regardless of type.
 
 Hence, we might add a piece of code to extract the citekey:
 ```vim
-py3 <<EOF
-def get_citekey(fold):
-    # very crude extraction without regexes
-    return fold[0].split("{")[1].split(",")[0]
-
-import sort_folds
-sort_folds.register_key_function(get_citekey)
+lua <<EOF
+local sort_folds = require('sort-folds')
+sort_folds.register_key_function('get_citekey', function(fold)
+  -- very crude extraction without regexes
+  local first_line = fold:get_line(0) or ""
+  local after_brace = first_line:match("{([^}]*)")
+  if after_brace then
+    local key = after_brace:match("([^,]*)")
+    return key or ""
+  end
+  return ""
+end)
 EOF
 
-autocmd FileType bib let sort_folds_key_function="get_citekey"
+autocmd FileType bib let g:sort_folds_key_function="get_citekey"
 ```
 
-Note: `get_citekey` is already part of the
-[builtin functions](python3/sort_folds/key_functions.py).
+Note: `get_citekey` is already part of the builtin functions and can be used directly.
