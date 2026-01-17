@@ -30,7 +30,11 @@ describe("sort-folds", function()
       }
       vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
       
-      local Fold = getmetatable(fold_module.get_folds(1, 3)[1])
+      local folds = fold_module.get_folds(1, 3)
+      assert.is_not_nil(folds)
+      assert.equals(1, #folds)
+      
+      local Fold = getmetatable(folds[1])
       assert.is_not_nil(Fold)
     end)
     
@@ -279,23 +283,32 @@ describe("sort-folds", function()
   describe("config", function()
     it("should respect sort_folds_ignore_case setting", function()
       local config = require('sort-folds.config')
+      local fold_module = require('sort-folds.fold')
       
+      -- Create a test buffer with a fold
+      local lines = {
+        "{{{ ABC",
+        "Content",
+        "}}}"
+      }
+      vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
+      vim.cmd('normal! gg')
+      vim.cmd('normal! zc')
+      
+      -- Get actual fold object
+      local folds = fold_module.get_folds(1, 3)
+      assert.equals(1, #folds)
+      local test_fold = folds[1]
+      
+      -- Test case-sensitive
       vim.g.sort_folds_ignore_case = 0
       local key_fn = config.get_fold_to_sort_key(0)
+      assert.equals("{{{ ABC", key_fn(test_fold))
       
-      -- Create mock fold
-      local mock_fold = {
-        get_line = function(self, idx)
-          if idx == 0 then return "ABC" end
-          return nil
-        end
-      }
-      
-      assert.equals("ABC", key_fn(mock_fold))
-      
+      -- Test case-insensitive
       vim.g.sort_folds_ignore_case = 1
       key_fn = config.get_fold_to_sort_key(0)
-      assert.equals("abc", key_fn(mock_fold))
+      assert.equals("{{{ abc", key_fn(test_fold))
       
       -- Reset
       vim.g.sort_folds_ignore_case = 0

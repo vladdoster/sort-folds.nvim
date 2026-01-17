@@ -13,9 +13,16 @@ test: ## Run tests using Busted framework
 
 install: ## Install test dependencies (busted and luarocks)
 	@echo "Checking for luarocks..."
-	@which luarocks > /dev/null || (echo "Error: luarocks not found. Please install it first." && exit 1)
+	@which luarocks > /dev/null || (echo "Error: luarocks not found. Please install it first with: sudo apt-get install luarocks" && exit 1)
 	@echo "Installing busted and nlua..."
-	@luarocks install --local busted nlua || sudo luarocks install busted nlua
+	@if luarocks install --local busted nlua 2>/dev/null; then \
+		echo "Test dependencies installed locally in ~/.luarocks/"; \
+		echo "You may need to add ~/.luarocks/bin to your PATH"; \
+	else \
+		echo "Local installation failed. Trying system-wide installation..."; \
+		echo "This requires root privileges. You may be prompted for your password."; \
+		sudo luarocks install busted nlua || (echo "Error: Failed to install dependencies. Please install manually." && exit 1); \
+	fi
 	@echo "Test dependencies installed successfully!"
 
 clean: ## Clean up temporary files
