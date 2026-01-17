@@ -10,8 +10,9 @@ M.fold = require('sort-folds.fold')
 M.config = require('sort-folds.config')
 M.key_functions = require('sort-folds.key_functions')
 
--- Main sorting function (convenience wrapper)
+-- Main sorting functions
 M.sort_folds = M.sort.sort_folds
+M.sort_folds_range = M.sort.sort_folds_range
 
 -- Register a custom key function
 function M.register_key_function(name, func)

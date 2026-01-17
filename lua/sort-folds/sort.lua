@@ -6,10 +6,12 @@ local config = require('sort-folds.config')
 
 local M = {}
 
--- Sort folds in the current range
+-- Sort folds in the specified range
+-- @param start_line: Starting line (1-indexed, inclusive)
+-- @param end_line: Ending line (1-indexed, inclusive)
 -- @param sort_line: Line by which to sort each fold (0-indexed within fold)
 --                   Ignored if g:sort_folds_key_function is defined
-function M.sort_folds(sort_line)
+function M.sort_folds_range(start_line, end_line, sort_line)
   sort_line = sort_line or 0
   
   -- Get the key function
@@ -19,7 +21,7 @@ function M.sort_folds(sort_line)
   end
   
   -- Get all folds in the range
-  local folds = fold.get_folds()
+  local folds = fold.get_folds(start_line, end_line)
   
   -- Sort the folds
   table.sort(folds, function(a, b)
@@ -38,9 +40,14 @@ function M.sort_folds(sort_line)
   end
   
   -- Replace the range with sorted lines
+  vim.api.nvim_buf_set_lines(0, start_line - 1, end_line, false, sorted_lines)
+end
+
+-- Convenience wrapper for backwards compatibility
+function M.sort_folds(sort_line)
   local start_line = vim.fn.line("'<")
   local end_line = vim.fn.line("'>")
-  vim.api.nvim_buf_set_lines(0, start_line - 1, end_line, false, sorted_lines)
+  M.sort_folds_range(start_line, end_line, sort_line)
 end
 
 return M

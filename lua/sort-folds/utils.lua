@@ -12,7 +12,11 @@ end
 function M.preserve_cursor(func)
   local pos = vim.api.nvim_win_get_cursor(0)
   local ok, result = pcall(func)
-  vim.api.nvim_win_set_cursor(0, pos)
+  -- Only restore cursor if the position is valid
+  local line_count = vim.api.nvim_buf_line_count(0)
+  if pos[1] <= line_count then
+    pcall(vim.api.nvim_win_set_cursor, 0, pos)
+  end
   if not ok then
     error(result)
   end

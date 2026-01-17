@@ -5,5 +5,10 @@
 
 function! SortFolds#SortFolds(...) range
     let sortline = get(a:, 0, 0)
-    lua require('sort-folds').sort_folds(vim.fn.eval('sortline'))
+    lua << EOF
+    local sortline = vim.fn.eval('sortline')
+    local start_line = vim.fn.eval('a:firstline')
+    local end_line = vim.fn.eval('a:lastline')
+    require('sort-folds').sort_folds_range(start_line, end_line, sortline)
+EOF
 endfunction

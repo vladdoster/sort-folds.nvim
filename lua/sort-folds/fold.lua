@@ -64,12 +64,11 @@ function M.get_foldlevel_at(lineno)
   return vim.fn.foldlevel(lineno)
 end
 
--- Get all folds in the current range
-function M.get_folds()
+-- Get all folds in the specified range
+-- @param start_line: Starting line (1-indexed, inclusive)
+-- @param end_line: Ending line (1-indexed, inclusive)
+function M.get_folds(start_line, end_line)
   return utils.preserve_cursor(function()
-    local start_line = vim.fn.line("'<")
-    local end_line = vim.fn.line("'>")
-    
     local folds = {}
     local fold_start = start_line
     local fold_end = -1
