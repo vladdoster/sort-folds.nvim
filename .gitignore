@@ -90,3 +90,9 @@ ENV/
 
 # Tags for vim help (generated)
 doc/tags
+
+# Lua/LuaRocks
+.luarocks/
+luarocks/
+.luacov
+*.rock
