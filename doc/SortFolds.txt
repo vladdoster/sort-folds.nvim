@@ -1,6 +1,6 @@
-*SortFolds.txt*	For Vim version 8.0	Last change: 2021 February 8
+*SortFolds.txt*	For Neovim 0.5.0+	Last change: 2026 January 17
 
-Version: 1.2.0
+Version: 2.0.0
 Author : Oliver Breitwieser <oliver@breitwieser.eu>
 License: MIT license
 
@@ -25,6 +25,14 @@ USAGE                                   *SortFolds* *SortFolds-usage*
     `foldmethod` set to `manual` for now.
 
 ==============================================================================
+COMMANDS                                *SortFolds-commands*
+
+                                        *:SortFolds*
+:SortFolds [line]       Sort folds in the selected range. Optional [line]
+                        argument specifies which line within each fold to use
+                        for sorting (0-indexed, default: 0).
+
+==============================================================================
 MAPPINGS                                *SortFolds-mappings*
 
     Currently there is only one binding - |<Plug>SortFolds| - that needs to be
@@ -37,29 +45,39 @@ MAPPINGS                                *SortFolds-mappings*
     Then visually select the region you want to sort and use the mapping.
 
 
-    Since Alternatively, you can visually select a region and use the sorting
-    function directly:
+    Alternatively, you can visually select a region and use the command:
 >
-    :call SortFolds#SortFolds()
+    :'<,'>SortFolds
 
 ==============================================================================
 SORTING BY OTHER LINES IN FOLD          *SortFolds-custom-sort-line*
 
     Per default folds are sorted based on the contents of the first line in
     each fold. If, for some reason, you need to sort folds by the contents of
-    another line, you can do by directly calling `SortFolds#SortFolds` with
+    another line, you can do by directly calling `:SortFolds` with
     the given line number. Lines in folds are zero-indexed. That means to sort
-    based on the 42th line you would map:
+    based on the 42nd line you would use:
 >
-    vmap <silent> <Leader>sf :call SortFolds#SortFolds(41)<CR>
+    :'<,'>SortFolds 41
 
 ==============================================================================
 CONFIGURATION                           *SortFolds-configuration*
 
+                                        *SortFolds-setup*
+                                        *sort-folds.setup()*
+
+    The plugin can be configured using the `setup()` function in Lua:
+>lua
+    require('sort-folds').setup({
+      ignore_case = false,      -- Set to true for case-insensitive sorting
+      key_function = nil,       -- Name of custom key function (optional)
+    })
+<
+
                                         *g:sort_folds_ignore_case*
 
-    You can ignore case when sorting by modifying this variable:
->
+    You can also ignore case when sorting using a global variable:
+>vim
     let g:sort_folds_ignore_case = 1
 <
     Default is 0
@@ -70,12 +88,11 @@ CUSTOM KEY FUNCTIONS                    *SortFolds-custom-key-function*
                                         *g:sort_folds_key_function*
 
     Sometimes you need to sort folds by some custom key. For this reason, you
-    can define a custom sort function in Python that maps fold contents
-    (essentially a list of lines) to a a key (a string) by which the fold will
-    be sorted.
+    can define a custom sort function in Lua that maps fold contents to a key
+    (a string or number) by which the fold will be sorted.
 
     Afterwards, you need to set |g:sort_folds_key_function| to the name of the
-    function.
+    function, or use the `setup()` function with the `key_function` option.
 
     Example: Sort BibTeX-entries by citekey~
 
@@ -84,17 +101,29 @@ CUSTOM KEY FUNCTIONS                    *SortFolds-custom-key-function*
     them by citekey regardless of type.
 
     Hence, we might add a piece of code to extract the citekey:
->
-    py3 <<EOF
-    def get_citekey(fold):
-        # very crude extraction without regexes
-        return fold[0].split("{")[1].split(",")[0]
-
-    import sort_folds
-    sort_folds.register_key_function(get_citekey)
-    EOF
-
-    autocmd FileType bib let sort_folds_key_function="get_citekey"
+>lua
+    local sort_folds = require('sort-folds')
+    
+    sort_folds.register_key_function('get_citekey', function(fold)
+      local first_line = fold:get_line(0) or ""
+      local after_brace = first_line:match("{([^}]*)")
+      if after_brace then
+        local key = after_brace:match("([^,]*)")
+        return key or ""
+      end
+      return ""
+    end)
+    
+    -- Set globally
+    sort_folds.setup({ key_function = 'get_citekey' })
+    
+    -- Or for specific filetype
+    vim.api.nvim_create_autocmd('FileType', {
+      pattern = 'bib',
+      callback = function()
+        vim.g.sort_folds_key_function = 'get_citekey'
+      end
+    })
 <
     Note: `get_citekey` is already part of the |SortFolds-builtin-key-functions|
 
@@ -104,8 +133,36 @@ BUILTIN KEY FUNCTIONS                   *SortFolds-builtin-key-functions*
     `get_citekey`   Map a BibTeX-entry to its citekey.
 
 ==============================================================================
+LUA API                                 *SortFolds-lua-api*
+
+                                        *sort-folds.sort_folds_range()*
+sort-folds.sort_folds_range({start_line}, {end_line}, {sort_line})
+    Sort folds in the specified range.
+    
+    Parameters: ~
+      • {start_line}  (number) Starting line (1-indexed, inclusive)
+      • {end_line}    (number) Ending line (1-indexed, inclusive)
+      • {sort_line}   (number) Line to sort by within each fold (0-indexed)
+
+                                        *sort-folds.sort_folds()*
+sort-folds.sort_folds({sort_line})
+    Sort folds in the visual selection.
+    
+    Parameters: ~
+      • {sort_line}   (number) Line to sort by within each fold (0-indexed)
+
+                                        *sort-folds.register_key_function()*
+sort-folds.register_key_function({name}, {func})
+    Register a custom key function for sorting.
+    
+    Parameters: ~
+      • {name}  (string) Name of the function
+      • {func}  (function) Function that takes a fold object and returns
+                          a sortable key (string or number)
+
+==============================================================================
 REQUIREMENTS                            *SortFolds-requirements*
 
-    SortFolds needs |+python3| support enabled.
+    SortFolds requires Neovim 0.5.0 or later with Lua support.
 
  vim:tw=78:ts=4:ft=help:norl:

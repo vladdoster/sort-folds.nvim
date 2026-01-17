@@ -48,7 +48,20 @@ available, but can be easily remapped.
 
 ## Configuration
 
-You can ignore case when sorting by modifying this variable:
+### Lua Configuration (Recommended)
+
+You can configure the plugin using the `setup()` function:
+
+```lua
+require('sort-folds').setup({
+  ignore_case = false,  -- Set to true for case-insensitive sorting (default: false)
+})
+```
+
+### VimScript Configuration (Legacy)
+
+You can also use VimScript global variables:
+
 ```vim
 let g:sort_folds_ignore_case = 1
 ```
@@ -61,16 +74,46 @@ Sometimes you need to sort folds by some custom key.
 For this reason, you can define a custom sort function in Lua that maps fold
 contents to a key (a string or number) by which the fold will be sorted.
 
-Afterwards, you need to set `g:sort_folds_key_function` to the name of the
-function.
-
 ### Example: Sort BibTeX-entries by key only, but not entry type
 
 BibTeX-entries can be of several types (`article`, `book`, `inproceedings`,
 `online`, to name a few…). However, we might want to sort them by citekey
 regardless of type.
 
-Hence, we might add a piece of code to extract the citekey:
+#### Using Lua Configuration
+
+```lua
+local sort_folds = require('sort-folds')
+
+-- Register custom key function
+sort_folds.register_key_function('get_citekey', function(fold)
+  local first_line = fold:get_line(0) or ""
+  local after_brace = first_line:match("{([^}]*)")
+  if after_brace then
+    local key = after_brace:match("([^,]*)")
+    return key or ""
+  end
+  return ""
+end)
+
+-- Configure to use it
+sort_folds.setup({
+  key_function = 'get_citekey'
+})
+```
+
+Or for a specific filetype:
+```lua
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'bib',
+  callback = function()
+    vim.g.sort_folds_key_function = 'get_citekey'
+  end
+})
+```
+
+#### Using VimScript (Legacy)
+
 ```vim
 lua <<EOF
 local sort_folds = require('sort-folds')
