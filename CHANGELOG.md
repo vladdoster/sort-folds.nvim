@@ -17,6 +17,13 @@
 * Update versioning comments in config.lua ([a61f8b9](https://github.com/vladdoster/sort-folds.nvim/commit/a61f8b9e8d2063f0b0044350c47928261da91152))
 
 
+## [1.3.1](https://github.com/vladdoster/sort-folds.nvim/compare/v1.3.0...v1.3.1) (2026-01-31)
+
+
+### Bug Fixes
+
+* Delete CONTRIBUTORS.md ([c13bc05](https://github.com/vladdoster/sort-folds.nvim/commit/c13bc0514e366111cacb62558633521db72f8de3))
+
 ## v1.2.0
 
 * Internal:
