@@ -5,6 +5,8 @@ local key_functions = require('sort-folds.key_functions')
 
 local M = {}
 
+M.version = "1.2.0" -- x-release-please-version
+
 -- Get the key function for sorting folds by a specific line
 -- @param sort_line: Line index to sort by (0-indexed within each fold)
 function M.get_fold_to_sort_key(sort_line)
