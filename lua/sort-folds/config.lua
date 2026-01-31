@@ -6,7 +6,7 @@ local key_functions = require('sort-folds.key_functions')
 local M = {}
 
 -- x-release-please-start-version
-M.version = "1.3.0"
+M.version = "1.3.1"
 -- x-release-please-end
 
 -- Get the key function for sorting folds by a specific line
