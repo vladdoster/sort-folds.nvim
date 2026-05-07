@@ -130,7 +130,7 @@ require('sort-folds').setup({
 
 - Command:
   - `:'<,'>SortFolds`
-- `:'<,'>SortFolds 41` sorts by fold-local line index `41` (0-based, the 42nd line).
+- `:'<,'>SortFolds 41` sorts by fold-local line index `41`.
 
 - Mapping:
   - `<Plug>SortFolds` in visual mode.
