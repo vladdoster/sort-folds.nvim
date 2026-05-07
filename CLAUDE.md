@@ -130,7 +130,7 @@ require('sort-folds').setup({
 
 - Command:
   - `:'<,'>SortFolds`
-- `:'<,'>SortFolds 41` sorts by fold-local line index `41`.
+- `:'<,'>SortFolds 41` sorts by line index `41` within each fold.
 
 - Mapping:
   - `<Plug>SortFolds` in visual mode.
@@ -157,9 +157,9 @@ Make targets:
 - `make install`
 - `make clean`
 
-Current environment caveat observed during analysis:
-- `make test` fails if `vusted` is missing.
-- `make install` requires `luarocks`; without it installation fails.
+Local execution prerequisites observed during analysis:
+- `make test` requires `vusted` to be installed and available on `PATH`.
+- `make install` requires `luarocks` to be installed and available on `PATH`.
 
 CI (`.github/workflows/test.yml`) installs LuaRocks + deps, then runs `make test-coverage` across Neovim stable/nightly.
 
