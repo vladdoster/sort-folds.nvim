@@ -173,10 +173,9 @@ CI (`.github/workflows/test.yml`) installs LuaRocks + deps, then runs `make test
   - `x-release-please-end`
 - Release workflow currently triggers on pushes to `main`.
 
-Branch naming issue to resolve:
+Current workflow trigger branches:
 - Test workflow is configured for `master`/`develop` (push) and PRs to `master`.
 - Release workflow targets `main`.
-- Repository maintainers should align workflow branch triggers with the intended default/release branch.
 
 ---
 
