@@ -14,7 +14,7 @@ The plugin extracts folds in a selected range, computes a sortable key per fold,
 
 ## Runtime & Compatibility
 
-- Requires **Neovim 0.5.0+** (documentation still references legacy Vim support in README, but code is Neovim API-based).
+- Requires **Neovim 0.5.0+**.
 - Implemented fully in Lua.
 - License: MIT.
 
@@ -173,10 +173,10 @@ CI (`.github/workflows/test.yml`) installs LuaRocks + deps, then runs `make test
   - `x-release-please-end`
 - Release workflow currently triggers on pushes to `main`.
 
-Branch naming note:
+Branch naming issue to resolve:
 - Test workflow is configured for `master`/`develop` (push) and PRs to `master`.
 - Release workflow targets `main`.
-- Contributors should verify intended default branch and keep workflow triggers consistent.
+- Repository maintainers should align workflow branch triggers with the intended default/release branch.
 
 ---
 
