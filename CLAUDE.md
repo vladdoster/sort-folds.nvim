@@ -130,7 +130,7 @@ require('sort-folds').setup({
 
 - Command:
   - `:'<,'>SortFolds`
-- `:'<,'>SortFolds 41` sorts by fold-local 0-based line index `41` (the 42nd line).
+- `:'<,'>SortFolds 41` sorts by fold-local line index `41` (0-based, the 42nd line).
 
 - Mapping:
   - `<Plug>SortFolds` in visual mode.
@@ -176,6 +176,7 @@ CI (`.github/workflows/test.yml`) installs LuaRocks + deps, then runs `make test
 Current workflow trigger branches:
 - Test workflow is configured for `master`/`develop` (push) and PRs to `master`.
 - Release workflow targets `main`.
+- Treat these as current repository settings and verify branch intent before modifying workflow triggers.
 
 ---
 
