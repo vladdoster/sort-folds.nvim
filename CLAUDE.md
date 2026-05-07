@@ -129,8 +129,8 @@ require('sort-folds').setup({
 ## Command & Mapping UX
 
 - Command:
-  - `:'<,'>SortFolds`
-- `:'<,'>SortFolds 41` sorts by line index `41` within each fold.
+  - `:SortFolds` (when invoked from visual selection, Vim/Neovim applies the selected range)
+  - `:'<,'>SortFolds 41` sorts by line index `41` within each fold.
 
 - Mapping:
   - `<Plug>SortFolds` in visual mode.
@@ -172,11 +172,6 @@ CI (`.github/workflows/test.yml`) installs LuaRocks + deps, then runs `make test
   - `x-release-please-start-version`
   - `x-release-please-end`
 - Release workflow currently triggers on pushes to `main`.
-
-Current workflow trigger branches:
-- Test workflow is configured for `master`/`develop` (push) and PRs to `master`.
-- Release workflow targets `main`.
-- Treat these as current repository settings and verify branch intent before modifying workflow triggers.
 
 ---
 
